@@ -5,34 +5,33 @@
 # los desarrolladores de aplicaciones/modulos no puedan alterar el motor del IDP
 # sin la aprobacion explicita del equipo de Platform Engineering.
 #
-# Configuracion recomendada en la GitHub Organization (ej. github.com/dsc-uni):
-#   - @dsc-uni/idp-maintainers : Arquitectos y mantenedores del nucleo del IDP
-#   - @dsc-uni/app-developers  : Desarrolladores y voluntarios de apps/modulos
+# Mantenedores de Developer-Student-Club-UNI:
+#   - @JoCGM09 @GersoZz : Arquitectos y mantenedores del nucleo del IDP
 # =============================================================================
 
 # 1. Nucleo Protegido del IDP (Solo Mantenedores de Plataforma)
-/README.md                      @dsc-uni/idp-maintainers
-/GUIA_DESARROLLADOR_JUNIOR.md   @dsc-uni/idp-maintainers
-/AGENTS.md                      @dsc-uni/idp-maintainers
-/CLAUDE.md                      @dsc-uni/idp-maintainers
-/CONVENTIONS.md                 @dsc-uni/idp-maintainers
-/.cursorrules                   @dsc-uni/idp-maintainers
-/.windsurfrules                 @dsc-uni/idp-maintainers
-/opencode.json                  @dsc-uni/idp-maintainers
-/package.json                   @dsc-uni/idp-maintainers
-/pnpm-workspace.yaml            @dsc-uni/idp-maintainers
-/turbo.json                     @dsc-uni/idp-maintainers
-/tsconfig.json                  @dsc-uni/idp-maintainers
-/packages/**                    @dsc-uni/idp-maintainers
-/tooling/**                     @dsc-uni/idp-maintainers
-/.ai/**                         @dsc-uni/idp-maintainers
-/.opencode/**                   @dsc-uni/idp-maintainers
-/.claude/**                     @dsc-uni/idp-maintainers
-/.agent/**                      @dsc-uni/idp-maintainers
-/.github/**                     @dsc-uni/idp-maintainers
-/specs/**                       @dsc-uni/idp-maintainers
+/README.md                      @JoCGM09 @GersoZz
+/GUIA_DESARROLLADOR_JUNIOR.md   @JoCGM09 @GersoZz
+/AGENTS.md                      @JoCGM09 @GersoZz
+/CLAUDE.md                      @JoCGM09 @GersoZz
+/CONVENTIONS.md                 @JoCGM09 @GersoZz
+/.cursorrules                   @JoCGM09 @GersoZz
+/.windsurfrules                 @JoCGM09 @GersoZz
+/opencode.json                  @JoCGM09 @GersoZz
+/package.json                   @JoCGM09 @GersoZz
+/pnpm-workspace.yaml            @JoCGM09 @GersoZz
+/turbo.json                     @JoCGM09 @GersoZz
+/tsconfig.json                  @JoCGM09 @GersoZz
+/packages/**                    @JoCGM09 @GersoZz
+/tooling/**                     @JoCGM09 @GersoZz
+/.ai/**                         @JoCGM09 @GersoZz
+/.opencode/**                   @JoCGM09 @GersoZz
+/.claude/**                     @JoCGM09 @GersoZz
+/.agent/**                      @JoCGM09 @GersoZz
+/.github/**                     @JoCGM09 @GersoZz
+/specs/**                       @JoCGM09 @GersoZz
 
 # 2. Zona de Extension Abierta a Desarrolladores de Apps y Modulos
-/apps/**                        @dsc-uni/app-developers @dsc-uni/idp-maintainers
-/modules/**                     @dsc-uni/app-developers @dsc-uni/idp-maintainers
-/specs/ACTIVE_SESSION.md        @dsc-uni/app-developers @dsc-uni/idp-maintainers
+/apps/**                        @JoCGM09 @GersoZz
+/modules/**                     @JoCGM09 @GersoZz
+/specs/ACTIVE_SESSION.md        @JoCGM09 @GersoZz
