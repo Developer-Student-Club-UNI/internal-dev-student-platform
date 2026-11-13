@@ -1,0 +1,22 @@
+{
+  "extends": "@repo/config/tsconfig.nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@repo/ui": ["../../packages/ui/src/index.ts"],
+      "@repo/layouts": ["../../packages/layouts/src/index.ts"],
+      "@repo/api-client": ["../../packages/api-client/src/index.ts"],
+      "@repo/auth": ["../../packages/auth/src/index.ts"],
+      "@repo/security": ["../../packages/security/src/index.ts"],
+      "@repo/module-sdk": ["../../packages/module-sdk/src/index.ts"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "app.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

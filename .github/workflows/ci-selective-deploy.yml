@@ -1,0 +1,128 @@
+name: Selective Multi-App CI/CD (Cloudflare Pages & Vercel)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. GUARDRAILS ZERO-TRUST & DETECCIÓN DE APPS AFECTADAS CON TURBOREPO
+  # ---------------------------------------------------------------------------
+  detect-and-validate:
+    name: Zero-Trust Guardrails & Affected Apps
+    runs-on: ubuntu-latest
+    outputs:
+      affected_apps: ${{ steps.detect.outputs.apps }}
+      has_affected: ${{ steps.detect.outputs.has_affected }}
+    steps:
+      - name: Checkout Monorepo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify PR Role Scope (Protect IDP Core & Templates)
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          IDP_MAINTAINERS: ${{ vars.IDP_MAINTAINERS }}
+        run: pnpm validate:pr-scope
+
+      - name: Run Zero-Trust IDP Guardrails (Apps, Modules & Design System)
+        run: pnpm validate:all
+
+      - name: Run Monorepo Typecheck
+        run: pnpm typecheck
+
+      - name: Detect Affected Apps via Turborepo Graph
+        id: detect
+        run: |
+          BASE_REF="${{ github.event_name == 'pull_request' && 'origin/main' || 'HEAD~1' }}"
+          DRY_JSON=$(pnpm turbo run build --filter="./apps/*" --filter="...[$BASE_REF]" --dry=json || echo '{"packages":[]}')
+          APPS=$(echo "$DRY_JSON" | jq -c '[.packages[] | select(startswith("@apps/")) | sub("^@apps/"; "")]')
+          if [ "$APPS" = "[]" ] || [ -z "$APPS" ]; then
+            echo "apps=[]" >> $GITHUB_OUTPUT
+            echo "has_affected=false" >> $GITHUB_OUTPUT
+          else
+            echo "apps=$APPS" >> $GITHUB_OUTPUT
+            echo "has_affected=true" >> $GITHUB_OUTPUT
+          fi
+
+  # ---------------------------------------------------------------------------
+  # 2. MATRIZ DE BUILD AISLADO (turbo prune) Y DEPLOY DUAL (Cloudflare & Vercel)
+  # ---------------------------------------------------------------------------
+  deploy-affected-apps:
+    name: Build & Deploy (${{ matrix.app }})
+    needs: detect-and-validate
+    if: needs.detect-and-validate.outputs.has_affected == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-and-validate.outputs.affected_apps) }}
+    steps:
+      - name: Checkout Monorepo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Prune Monorepo Scope for @apps/${{ matrix.app }}
+        run: npx turbo prune --scope=@apps/${{ matrix.app }} --docker
+
+      - name: Install Pruned Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @apps/${{ matrix.app }}
+        run: pnpm turbo run build --filter=@apps/${{ matrix.app }}
+
+      # --- Opción A: Despliegue en Cloudflare Pages (Sitios y Previews Ilimitados Gratis) ---
+      - name: Deploy to Cloudflare Pages (if configured)
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy apps/${{ matrix.app }}/.next \
+            --project-name="idp-${{ matrix.app }}" \
+            --branch="${{ github.head_ref || github.ref_name }}"
+
+      # --- Opción B: Despliegue en Vercel Prebuilt (si está configurado) ---
+      - name: Deploy to Vercel (if configured)
+        if: env.VERCEL_TOKEN != ''
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets[format('VERCEL_PROJECT_ID_{0}', matrix.app)] }}
+        run: |
+          npx vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=$VERCEL_TOKEN
+          npx vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=$VERCEL_TOKEN
+          npx vercel deploy --prebuilt ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=$VERCEL_TOKEN

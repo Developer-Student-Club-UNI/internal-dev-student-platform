@@ -1,0 +1,38 @@
+# =============================================================================
+# GOBERNANZA DE ROLES DEL IDP (.github/CODEOWNERS)
+# =============================================================================
+# Este archivo protege el nucleo de la plataforma y las plantillas para que
+# los desarrolladores de aplicaciones/modulos no puedan alterar el motor del IDP
+# sin la aprobacion explicita del equipo de Platform Engineering.
+#
+# Configuracion recomendada en la GitHub Organization (ej. github.com/dsc-uni):
+#   - @dsc-uni/idp-maintainers : Arquitectos y mantenedores del nucleo del IDP
+#   - @dsc-uni/app-developers  : Desarrolladores y voluntarios de apps/modulos
+# =============================================================================
+
+# 1. Nucleo Protegido del IDP (Solo Mantenedores de Plataforma)
+/README.md                      @dsc-uni/idp-maintainers
+/GUIA_DESARROLLADOR_JUNIOR.md   @dsc-uni/idp-maintainers
+/AGENTS.md                      @dsc-uni/idp-maintainers
+/CLAUDE.md                      @dsc-uni/idp-maintainers
+/CONVENTIONS.md                 @dsc-uni/idp-maintainers
+/.cursorrules                   @dsc-uni/idp-maintainers
+/.windsurfrules                 @dsc-uni/idp-maintainers
+/opencode.json                  @dsc-uni/idp-maintainers
+/package.json                   @dsc-uni/idp-maintainers
+/pnpm-workspace.yaml            @dsc-uni/idp-maintainers
+/turbo.json                     @dsc-uni/idp-maintainers
+/tsconfig.json                  @dsc-uni/idp-maintainers
+/packages/**                    @dsc-uni/idp-maintainers
+/tooling/**                     @dsc-uni/idp-maintainers
+/.ai/**                         @dsc-uni/idp-maintainers
+/.opencode/**                   @dsc-uni/idp-maintainers
+/.claude/**                     @dsc-uni/idp-maintainers
+/.agent/**                      @dsc-uni/idp-maintainers
+/.github/**                     @dsc-uni/idp-maintainers
+/specs/**                       @dsc-uni/idp-maintainers
+
+# 2. Zona de Extension Abierta a Desarrolladores de Apps y Modulos
+/apps/**                        @dsc-uni/app-developers @dsc-uni/idp-maintainers
+/modules/**                     @dsc-uni/app-developers @dsc-uni/idp-maintainers
+/specs/ACTIVE_SESSION.md        @dsc-uni/app-developers @dsc-uni/idp-maintainers

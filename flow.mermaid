@@ -1,0 +1,63 @@
+graph TD
+    classDef process fill:#e6f4f5,stroke:#0f5257,stroke-width:2px,color:#05202a;
+    classDef artifact fill:#f5f7f7,stroke:#1a7a7e,stroke-width:1px,color:#0b1a2b;
+    classDef agent fill:#d8f3dc,stroke:#1c8c6f,stroke-width:2px,color:#05202a;
+    classDef decision fill:#fff8e6,stroke:#e0b25c,stroke-width:2px,color:#0b1a2b;
+
+    subgraph Fase_1 [1. Constitucion y Gobernanza del IDP]
+        A[Inicio / Evolucion del IDP] --> B["Comando: /constitution"];
+        B --> C{{"Agente: spec-writer"}};
+        C --> D["specs/mission.md + ARCHITECTURE.md"];
+        C --> E["specs/tech-stack.md + DESIGN_SYSTEM.md"];
+        C --> F["specs/roadmap.md + SECURITY.md"];
+    end
+
+    subgraph Fase_2 [2. Especificacion y Planificacion (Specs & Planning)]
+        G[Nueva App / Modulo / Feature] --> H["Comando: /feature <nombre>"];
+        H --> I{{"Agente: spec-writer"}};
+        I --> J["Crear specs/FECHA-feature/requirements.md"];
+        I --> K["Crear specs/FECHA-feature/plan.md"];
+        I --> L["Crear specs/FECHA-feature/validation.md"];
+        K --> POC1{"Requiere Validar Hipotesis?"};
+        POC1 -- Si --> POC2["Comando: /poc"];
+        POC2 --> POC3{{"Agente: proof-of-concept"}};
+        POC3 --> K1;
+        POC1 -- No --> K1{"Plan Aprobado?"};
+        K1 -- No --> I;
+    end
+
+    subgraph Fase_3 [3. Implementacion Incremental (Implement)]
+        K1 -- Si --> M["Comando: /implement"];
+        M --> N{{"Agente: build"}};
+        N --> O["Ejecutar 1 grupo de tareas de plan.md"];
+        O --> P["Marcar [x] en plan.md (Memoria Persistente)"];
+        P --> Q["Verificar pnpm validate:guardrails"];
+    end
+
+    subgraph Fase_4 [4. Pruebas y Auditoria Zero-Trust (Test & Security)]
+        Q --> R["Comando: /test"];
+        R --> S{{"Agente: test-writer"}};
+        S --> T["Ejecutar pnpm validate:all && pnpm typecheck && pnpm build"];
+        T --> U{"Verificacion OK?"};
+        U -- Fallo --> O;
+        U -- Exito --> V["Comando: /security-review"];
+        V --> W{{"Agente: security-reviewer"}};
+        W --> X["Auditoria OWASP Top 10 + OWASP AI + Logs"];
+        X --> Y{"Sin Hallazgos Criticos?"};
+        Y -- Hallazgos --> O;
+    end
+
+    subgraph Fase_5 [5. PR, Preview Deploy y Merge]
+        Y -- Limpio --> Z["Checklist validation.md Completa"];
+        Z --> AA["Pull Request -> GitHub Actions (turbo prune)"];
+        AA --> BB["Preview URL Automatica (Cloudflare Pages / Vercel)"];
+        BB --> CC[Merge a main -> Despliegue Selectivo Produccion];
+    end
+
+    F --> G;
+    CC --> G;
+
+    class C,I,N,S,W,POC3 agent;
+    class D,E,F,J,K,L artifact;
+    class K1,U,Y,POC1 decision;
+    class B,H,M,R,V,AA,BB,CC,POC2 process;

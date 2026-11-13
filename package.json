@@ -1,0 +1,49 @@
+{
+  "name": "internal-dev-student-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Spec-Driven Frontend Internal Developer Platform (IDP) - Multi-App & Multi-Module Monorepo",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "node tooling/generators/run-app.mjs",
+    "dev:external": "pnpm --filter @apps/external-community-web dev",
+    "dev:internal": "pnpm --filter @apps/internal-board-portal dev",
+    "dev:all": "turbo run dev",
+    "build": "turbo run build",
+    "lint": " node tooling/validators/enforce-guardrails.mjs && turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "validate:apps": "node tooling/validators/validate-apps.mjs",
+    "validate:modules": "node tooling/validators/validate-modules.mjs",
+    "validate:guardrails": "node tooling/validators/enforce-guardrails.mjs",
+    "validate:security": "node tooling/validators/validate-security.mjs",
+    "validate:pr-scope": "node tooling/validators/validate-pr-scope.mjs",
+    "validate:all": "pnpm validate:apps && pnpm validate:modules && pnpm validate:guardrails && pnpm validate:security",
+    "create:app": "node tooling/generators/create-app.mjs",
+    "create:module": "node tooling/generators/create-module.mjs",
+    "sdd:sync": "node .ai/scripts/sync.mjs",
+    "prepare": "node tooling/validators/setup-hooks.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.2",
+    "zod": "^3.24.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs}": [
+      "node tooling/validators/enforce-guardrails.mjs",
+      "node tooling/validators/validate-apps.mjs",
+      "node tooling/validators/validate-modules.mjs",
+      "node tooling/validators/validate-security.mjs"
+    ]
+  }
+}

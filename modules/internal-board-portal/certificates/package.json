@@ -1,0 +1,26 @@
+{
+  "name": "@modules/internal-board-portal--certificates",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    ".": "./module.config.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/auth": "workspace:*",
+    "@repo/module-sdk": "workspace:*",
+    "@repo/security": "workspace:*",
+    "@repo/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}

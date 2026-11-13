@@ -1,0 +1,8 @@
+{
+  "extends": "@repo/config/tsconfig.react-library.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src/**/*", "tailwind.preset.ts"],
+  "exclude": ["node_modules", "dist"]
+}

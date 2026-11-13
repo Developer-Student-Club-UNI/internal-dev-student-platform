@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * @repo/ui — ÚNICA FUENTE DE VERDAD DE TOKENS SEMÁNTICOS (White-Label Open Source IDP)
+ *
+ * Tema por defecto ('dsc-uni'): Extraído de `dsc-web-frontend/src/styles/_variables.scss`
+ *   - $color-teal-dark:    #0b3d3f -> hsl(182 70% 15%)
+ *   - $color-teal-darkest: #05202a -> hsl(196 79% 9%)
+ *   - $color-teal:         #0f5257 -> hsl(184 71% 20%)
+ *   - $color-teal-medium:  #1a7a7e -> hsl(182 66% 30%)
+ *   - $color-green-button: #1c8c6f -> hsl(164 67% 33%)
+ *   - $color-navy:         #0b1a2b -> hsl(212 59% 11%)
+ *   - $color-gold:         #e0b25c -> hsl(39 68% 62%)
+ *   - $color-bg-light:     #f5f7f7 -> hsl(180 11% 96%)
+ *   - $color-border:       #e0e0e0 -> hsl(0 0% 88%)
+ *
+ * Para aplicar el IDP a otra comunidad estudiantil (Open Source White-Label),
+ * basta con cambiar `themePreset` en `community.config.ts` o editar estas variables.
+ */
+@layer base {
+  :root,
+  [data-community-theme='dsc-uni'] {
+    /* Superficies ($color-bg-light #f5f7f7 y $color-white #ffffff) */
+    --idp-background: 180 11% 96%;
+    --idp-surface: 0 0% 100%;
+    --idp-surface-elevated: 180 14% 93%;
+    --idp-foreground: 0 0% 10%;
+    --idp-muted-foreground: 0 0% 29%;
+
+    /* Identidad Principal ($color-teal #0f5257, $color-teal-dark #0b3d3f, $color-teal-darkest #05202a, $color-teal-medium #1a7a7e) */
+    --idp-primary: 184 71% 20%;
+    --idp-primary-hover: 182 70% 15%;
+    --idp-primary-dark: 182 70% 15%;
+    --idp-primary-darkest: 196 79% 9%;
+    --idp-primary-medium: 182 66% 30%;
+    --idp-primary-foreground: 0 0% 100%;
+    --idp-footer-bg: 0 0% 0%;
+
+    /* Botones / Bloques Secundarios ($color-navy #0b1a2b / Superficie suave) */
+    --idp-secondary: 180 15% 91%;
+    --idp-secondary-foreground: 212 59% 11%;
+
+    /* Acento ($color-teal-medium #1a7a7e suave) */
+    --idp-accent: 182 45% 92%;
+    --idp-accent-foreground: 184 71% 20%;
+
+    /* Bordes ($color-border #e0e0e0) y Anillo de Foco ($color-teal-medium #1a7a7e) */
+    --idp-border-subtle: 0 0% 88%;
+    --idp-border-strong: 182 30% 72%;
+    --idp-ring: 182 66% 30%;
+
+    /* Estados Semánticos ($color-green-button #1c8c6f, $color-gold #e0b25c) */
+    --idp-status-success: 164 67% 33%;
+    --idp-status-success-bg: 164 55% 93%;
+    --idp-status-warning: 38 72% 36%;
+    --idp-status-warning-bg: 39 78% 93%;
+    --idp-status-danger: 0 74% 46%;
+    --idp-status-danger-bg: 0 86% 95%;
+    --idp-status-info: 182 66% 30%;
+    --idp-status-info-bg: 182 52% 93%;
+
+    /* Escala de Radios de dsc-web-frontend ($radius-sm: 8px, $radius-md: 16px, $radius-pill: 999px) */
+    --idp-radius-sm: 0.5rem;
+    --idp-radius-md: 1rem;
+    --idp-radius-lg: 1.25rem;
+    --idp-radius-pill: 999px;
+
+    /* Tipografía base de dsc-web-frontend */
+    --idp-font-sans: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Preset Open-Source Alternativo 1: Club de Ingeniería y Tecnología (Índigo/Azul) */
+  [data-community-theme='tech-indigo'] {
+    --idp-background: 216 33% 98%;
+    --idp-surface: 0 0% 100%;
+    --idp-surface-elevated: 215 28% 95%;
+    --idp-foreground: 222 47% 11%;
+    --idp-muted-foreground: 215 16% 44%;
+    --idp-primary: 226 71% 48%;
+    --idp-primary-hover: 226 75% 42%;
+    --idp-primary-foreground: 0 0% 100%;
+    --idp-secondary: 215 25% 93%;
+    --idp-secondary-foreground: 222 47% 14%;
+    --idp-accent: 226 100% 96%;
+    --idp-accent-foreground: 226 71% 42%;
+    --idp-border-subtle: 214 26% 89%;
+    --idp-border-strong: 215 22% 76%;
+    --idp-ring: 226 71% 48%;
+  }
+
+  /* Preset Open-Source Alternativo 2: AI & Robotics Guild (Violeta/Ciber) */
+  [data-community-theme='ai-guild'] {
+    --idp-background: 250 25% 98%;
+    --idp-surface: 0 0% 100%;
+    --idp-surface-elevated: 250 22% 94%;
+    --idp-foreground: 252 45% 11%;
+    --idp-muted-foreground: 250 14% 42%;
+    --idp-primary: 258 68% 46%;
+    --idp-primary-hover: 258 72% 38%;
+    --idp-primary-foreground: 0 0% 100%;
+    --idp-secondary: 250 20% 92%;
+    --idp-secondary-foreground: 252 45% 14%;
+    --idp-accent: 258 90% 95%;
+    --idp-accent-foreground: 258 68% 40%;
+    --idp-border-subtle: 250 20% 88%;
+    --idp-border-strong: 250 22% 74%;
+    --idp-ring: 258 68% 46%;
+  }
+
+  .dark {
+    --idp-background: 196 79% 9%;
+    --idp-surface: 182 70% 13%;
+    --idp-surface-elevated: 184 65% 18%;
+    --idp-foreground: 180 15% 97%;
+    --idp-muted-foreground: 180 12% 70%;
+
+    --idp-primary: 164 67% 38%;
+    --idp-primary-hover: 164 67% 44%;
+    --idp-primary-foreground: 0 0% 100%;
+
+    --idp-secondary: 184 55% 18%;
+    --idp-secondary-foreground: 180 15% 96%;
+
+    --idp-accent: 182 60% 20%;
+    --idp-accent-foreground: 164 70% 75%;
+
+    --idp-border-subtle: 184 45% 22%;
+    --idp-border-strong: 182 45% 34%;
+    --idp-ring: 164 67% 42%;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border-color: hsl(var(--idp-border-subtle));
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: hsl(var(--idp-background));
+    color: hsl(var(--idp-foreground));
+    font-family: var(--idp-font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [tabindex] {
+    &:focus-visible {
+      outline: 2px solid hsl(var(--idp-ring));
+      outline-offset: 2px;
+    }
+  }
+}

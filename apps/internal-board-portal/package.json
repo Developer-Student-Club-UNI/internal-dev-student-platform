@@ -1,0 +1,43 @@
+{
+  "name": "@apps/internal-board-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 4320",
+    "build": "next build",
+    "start": "next start --port 4320",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modules/internal-board-portal--certificates": "workspace:*",
+    "@modules/internal-board-portal--members-directory": "workspace:*",
+    "@modules/internal-board-portal--panel-audit": "workspace:*",
+    "@modules/internal-board-portal--panel-events": "workspace:*",
+    "@modules/internal-board-portal--panel-messages": "workspace:*",
+    "@modules/internal-board-portal--panel-projects": "workspace:*",
+    "@modules/internal-board-portal--panel-site": "workspace:*",
+    "@modules/internal-board-portal--panel-terms": "workspace:*",
+    "@modules/internal-board-portal--panel-units": "workspace:*",
+    "@modules/internal-board-portal--panel-users": "workspace:*",
+    "@repo/api-client": "workspace:*",
+    "@repo/auth": "workspace:*",
+    "@repo/layouts": "workspace:*",
+    "@repo/module-sdk": "workspace:*",
+    "@repo/security": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
+  }
+}

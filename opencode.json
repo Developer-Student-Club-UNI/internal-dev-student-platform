@@ -1,0 +1,113 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "specs/ACTIVE_SESSION.md",
+    "specs/mission.md",
+    "specs/tech-stack.md",
+    "specs/ARCHITECTURE.md",
+    "specs/DESIGN_SYSTEM.md",
+    "specs/SECURITY.md"
+  ],
+  "permission": {
+    "edit": "ask",
+    "webfetch": "ask",
+    "bash": {
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git add*": "allow",
+      "git commit*": "ask",
+      "git push*": "deny",
+      "pnpm validate*": "allow",
+      "pnpm typecheck*": "allow",
+      "pnpm lint*": "allow",
+      "pnpm test*": "allow",
+      "pnpm build*": "allow",
+      "pnpm sdd:sync*": "allow",
+      "rm -rf*": "deny",
+      "*": "ask"
+    }
+  },
+  "agent": {
+    "plan": {},
+    "build": {
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "git *": "allow",
+          "pnpm *": "allow",
+          "node *": "allow"
+        }
+      }
+    },
+    "spec-writer": {
+      "mode": "subagent",
+      "description": "Redacta o actualiza SPEC.md compactos por app/modulo y specs/ACTIVE_SESSION.md; NUNCA implementa codigo.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": false,
+        "webfetch": false,
+        "question": true
+      }
+    },
+    "test-writer": {
+      "mode": "subagent",
+      "description": "Ejecuta verificaciones Zero-Trust y tests a partir del SPEC.md activo.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "webfetch": false
+      },
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "pnpm test*": "allow",
+          "pnpm validate*": "allow",
+          "pnpm typecheck*": "allow",
+          "*": "ask"
+        }
+      }
+    },
+    "security-reviewer": {
+      "mode": "subagent",
+      "description": "Revision de seguridad de solo lectura (OWASP Top 10 Web, OWASP AI Top 10, secretos, RBAC, sanitizacion de logs).",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "webfetch": false
+      }
+    },
+    "code-reviewer": {
+      "mode": "subagent",
+      "description": "Revision de calidad de codigo, fronteras de modulos y cumplimiento de @repo/ui en solo lectura.",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "webfetch": false
+      }
+    },
+    "proof-of-concept": {
+      "mode": "subagent",
+      "description": "Construye pruebas de concepto (POC) aisladas para validar hipotesis tecnicas.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "webfetch": true
+      },
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "pnpm *": "allow"
+        }
+      }
+    }
+  }
+}
