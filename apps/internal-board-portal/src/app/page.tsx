@@ -132,6 +132,7 @@ export default function InternalPortalDashboardPage() {
                 {user.email}
               </span>
               <Badge variant="success">Verificado</Badge>
+              <Badge variant="primary">DSC UNI</Badge>
             </div>
             <p className="text-xs text-muted-foreground">
               Departamento / Unidad: {user.department} · Roles Backend:{' '}

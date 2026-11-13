@@ -100,6 +100,73 @@ internal-dev-student-platform/
     └── generators/                  # CLI: run-app.mjs (ejecución individual), create-app.mjs y create-module.mjs
 ```
 
+### 1.1 Diagrama de Flujos del IDP (Funcionamiento Interno y Externo)
+
+El siguiente diagrama muestra cómo interactúan los **4 flujos principales del IDP**: (1) el flujo de desarrollo SDD y gobernanza con Agentes de IA, (2) el flujo de aplicaciones **Externas/Públicas**, (3) el flujo de aplicaciones **Internas/Operativas con RBAC**, y (4) el núcleo compartido de **Seguridad Zero-Trust y Cliente de Backend**:
+
+```mermaid
+flowchart TB
+    %% ==========================================
+    %% 1. FLUJO DE DESARROLLO SDD Y GOBERNANZA IA
+    %% ==========================================
+    subgraph SDD["1. Flujo de Desarrollo SDD, Generadores y Gobernanza (Agente + Desarrollador)"]
+        direction LR
+        AI_SRC[".ai/ (Fuente Única)<br/>agents/ · commands/ · skills/"] -->|"pnpm sdd:sync"| HARNESS["Agentes de IA<br/>Claude · OpenCode · Cursor · Windsurf · Copilot"]
+        HARNESS -->|"1. Planifica (/feature)"| SPEC["SPEC.md Local (<80 líneas)<br/>+ specs/ACTIVE_SESSION.md"]
+        SPEC -->|"2. Scaffoldea"| GEN["Generadores CLI<br/>pnpm create:app (4310+)<br/>pnpm create:module"]
+        GEN -->|"3. Programa (/implement)"| CODE["Código en apps/* o modules/*<br/>(Aislado por fronteras)"]
+        CODE -->|"4. Verifica (/test & /security-review)"| VALIDATORS["Guardrails Zero-Trust<br/>validate:all · typecheck · build<br/>validate:pr-scope + CODEOWNERS"]
+        VALIDATORS -->|"5. Merge / PR"| CICD["CI/CD Selectivo (GitHub Actions)<br/>Cloudflare Pages / Vercel"]
+    end
+
+    %% ==========================================
+    %% 2. FLUJO DE NIVEL EXTERNO (APPS PÚBLICAS)
+    %% ==========================================
+    subgraph EXTERNAL["2. Flujo de Nivel Externo — Apps Públicas (apps/external-* · Puerto 4310 / 4330+)"]
+        direction TB
+        USER_PUB(("Visitante / Comunidad<br/>(Sin Login Obligatorio)")) -->|"HTTPS + CSP / HSTS"| EXT_APP["App Pública (ej. external-community-web)<br/>app.config.ts: audience='external'<br/>themePreset: dsc-uni | tech-indigo | ai-guild"]
+        EXT_APP --> EXT_SHELL["Shell Público (@repo/layouts)<br/>ExternalPublicShell / EventLandingShell<br/>(Header, Nav y Footer centralizados)"]
+        EXT_SHELL -->|"Slot: header-nav / landing-body"| EXT_HOST["Jaula de Montaje (@repo/module-sdk)<br/>ModuleHost + ModuleErrorBoundary<br/>+ sanitizeRoutePath()"]
+        EXT_HOST --> EXT_MODS["Módulos Públicos Aislados (modules/external-*)<br/>/nosotros · /team · /eventos · /contacto<br/>(Sin acceso a otros módulos ni HTML nativo)"]
+    end
+
+    %% ==========================================
+    %% 3. FLUJO DE NIVEL INTERNO (APPS OPERATIVAS RBAC)
+    %% ==========================================
+    subgraph INTERNAL["3. Flujo de Nivel Interno — Apps Operativas y Dashboards (apps/internal-* · Puerto 4320 / 4330+)"]
+        direction TB
+        USER_INT(("Miembro / Directiva / Admin<br/>(Sesión Autenticada)")) -->|"HTTPS + CSP / HSTS"| INT_APP["App Interna (ej. internal-board-portal)<br/>app.config.ts: audience='internal'<br/>layout='internal-dashboard' · auth.required=true"]
+        INT_APP --> INT_SHELL["Shell Operativo (@repo/layouts)<br/>InternalDashboardShell<br/>(Sidebar dinámica + RbacRoleSwitcher solo Dev)"]
+        INT_SHELL -->|"1. Verifica Rol de Ruta"| ROLE_GUARD["Guardia RBAC (@repo/auth)<br/>RoleGuard: admin · board · volunteer · member"]
+        ROLE_GUARD -->|"2. Aísla Fallos Runtime"| INT_HOST["Jaula de Montaje (@repo/module-sdk)<br/>ModuleHost + ModuleErrorBoundary"]
+        INT_HOST --> INT_MODS["Módulos Administrativos Aislados (modules/internal-*)<br/>/eventos · /proyectos · /equipo · /unidades · /ciclos<br/>/sitio · /mensajes · /usuarios · /auditoria · /certificates"]
+        INT_MODS -->|"3. Permiso Granular UI"| CAN_CHECK["Control de Capacidades (@repo/auth)<br/>can(user.roles, 'event:write' | 'user:write' | ...)"]
+    end
+
+    %% ==========================================
+    %% 4. NÚCLEO PROTEGIDO DEL IDP Y BACKEND
+    %% ==========================================
+    subgraph CORE["4. Núcleo Protegido del IDP (packages/*) y Comunicación con Backend"]
+        direction LR
+        UI_PKG["@repo/ui<br/>Tokens CSS Semánticos + 39 Iconos<br/>Button · Input · DataTable · Card · Badge"]
+        SEC_PKG["@repo/security (Firewall OWASP Web + AI)<br/>validateSafeInput (Anti-XSS / SQLi / NoSQLi)<br/>detectPromptInjection · safeLogger (Sin PII)"]
+        API_PKG["@repo/api-client (Zero-Trust HTTP)<br/>accessToken solo en RAM (Cero localStorage)<br/>refreshInFlight Single-Flight + X-CSRF-Token"]
+        BACKEND[("Backend & Datos<br/>1. Central: dsc-web-backend (PostgreSQL + R2)<br/>2. Dedicado por App (Supabase)<br/>3. 100% Frontend Local")]
+    end
+
+    %% Relaciones entre Capas
+    CODE -.->|"Genera / Actualiza"| EXT_MODS
+    CODE -.->|"Genera / Actualiza"| INT_MODS
+    EXT_MODS -->|" Consume componentes y tokens"| UI_PKG
+    INT_MODS -->|" Consume componentes y tokens"| UI_PKG
+    EXT_MODS -->|"Valida formularios / búsquedas"| SEC_PKG
+    INT_MODS -->|"Valida formularios / mutaciones"| SEC_PKG
+    CAN_CHECK -->|"Peticiones autenticadas"| API_PKG
+    EXT_MODS -->|"Lectura pública (catálogos/eventos)"| API_PKG
+    SEC_PKG -->|"Sanitiza entradas y URLs (Anti-SSRF)"| API_PKG
+    API_PKG <-->|"Cookie HttpOnly (__Host-) + Bearer RAM"| BACKEND
+```
+
 ---
 
 ## 2. Catálogo Completo de Flags, Layouts, Temas, Iconos, Roles y Permisos
