@@ -65,6 +65,54 @@ Este repositorio es una **fábrica de aplicaciones tipo LEGO** basada en un **Mo
 - **Las aplicaciones (`apps/`)** son las webs independientes (cada una con su puerto `4310`, `4320`, `4330+` y su propio dominio en producción).
 - **Los módulos (`modules/`)** son bloques enchufables aislados (como "Eventos", "Finanzas" o "Timer de Agendas") que se conectan a una aplicación sin riesgo de romper el resto.
 
+### 1.1 Mapa Visual Simplificado (Cómo encajan las piezas y cuál es tu flujo)
+
+```mermaid
+flowchart TB
+    %% ==========================================
+    %% FLUJO DEL DESARROLLADOR JUNIOR + AGENTE IA
+    %% ==========================================
+    subgraph TU_FLUJO["Tu Flujo de Trabajo Diario (Tú + Tu Agente de IA)"]
+        direction LR
+        PASO1["1. Pides crear App o Módulo<br/>(pnpm create:app / create:module)"] --> PASO2["2. Planifican el SPEC.md<br/>(/feature + ACTIVE_SESSION.md)"]
+        PASO2 --> PASO3["3. Tu Agente programa por grupos<br/>(/implement en apps/* o modules/*)"]
+        PASO3 --> PASO4["4. Cierre automático<br/>(/test + /security-review + PR con gh)"]
+    end
+
+    %% ==========================================
+    %% QUÉ SE CONSTRUYE: NIVEL EXTERNO VS INTERNO
+    %% ==========================================
+    subgraph APPS_Y_MODS["Lo que Tú y tu Agente Construyen (Zonas Editables)"]
+        direction LR
+        subgraph EXTERNO["Camino A: Webs Externas / Públicas (apps/external-*)"]
+            EXT_WEB["Web Pública (Puerto 4310 / 4330+)<br/>Sin login obligatorio · Shell Público"] --> EXT_MOD["Módulos Públicos (modules/external-*)<br/>Ej: /nosotros · /eventos · /contacto"]
+        end
+
+        subgraph INTERNO["Camino B: Paneles Internos / Privados (apps/internal-*)"]
+            INT_WEB["Panel Interno (Puerto 4320 / 4330+)<br/>Con Login + Guardia de Roles (RoleGuard)"] --> INT_MOD["Módulos Internos (modules/internal-*)<br/>Ej: /proyectos · /usuarios · /agendas<br/>Permisos con can(roles, permiso)"]
+        end
+    end
+
+    %% ==========================================
+    %% NÚCLEO LISTO PARA USAR (NO SE TOCA)
+    %% ==========================================
+    subgraph NUCLEO["Las Piezas LEGO Listas para Usar (packages/* — No las editas, solo las importas)"]
+        direction LR
+        LEGO_UI["@repo/ui<br/>Botones, Tablas, Cards,<br/>Colores e Iconos listos"]
+        LEGO_SEC["@repo/security<br/>Escudo contra Hackeos<br/>(validateSafeInput)"]
+        LEGO_API["@repo/api-client<br/>Conexión segura al Backend<br/>y Base de Datos"]
+    end
+
+    %% Conexiones simples
+    PASO3 -->|"Escribe código aquí"| APPS_Y_MODS
+    EXT_MOD -->|"Usa piezas de"| LEGO_UI
+    INT_MOD -->|"Usa piezas de"| LEGO_UI
+    EXT_MOD -->|"Limpia formularios con"| LEGO_SEC
+    INT_MOD -->|"Limpia formularios con"| LEGO_SEC
+    EXT_MOD -->|"Lee/Guarda datos con"| LEGO_API
+    INT_MOD -->|"Lee/Guarda datos con"| LEGO_API
+```
+
 ---
 
 ## 2. Mapa del Repositorio: ¿Qué puedo tocar y qué NO debo tocar?
