@@ -58,6 +58,7 @@ Cualquier violación a estas reglas provocará que `pnpm validate:all` y el hook
      ```bash
      pnpm validate:all && pnpm typecheck && pnpm build
      ```
+   - **REGLA CRÍTICA DE REINICIO DE `pnpm dev` TRAS `pnpm build`:** Ejecutar `pnpm build` (`next build`) sobrescribe la carpeta `.next/` con artefactos de producción. Si hay un servidor de desarrollo (`pnpm dev`, `pnpm dev:external`, `pnpm dev:internal` o `pnpm dev:all`) corriendo al mismo tiempo en los puertos `4310+`, sus estilos y chunks devolverán `500 Internal Server Error`. Siempre que ejecutes `pnpm build`, **DEBES** advertir al usuario que detenga (`Ctrl + C`) y vuelva a iniciar `pnpm dev` (o reiniciarlo tú mismo si corre en tu sesión) y recargue el navegador (`Ctrl + Shift + R`).
 
 ---
 

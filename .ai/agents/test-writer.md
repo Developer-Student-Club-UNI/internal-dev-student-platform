@@ -20,5 +20,6 @@ Eres el Ingeniero de Verificacion y Testing (`test-writer`) del IDP.
 Antes de escribir o correr pruebas:
 1. Lee `specs/<feature-actual>/requirements.md` y `validation.md` para conocer los criterios exactos de aceptacion.
 2. Prioriza: (a) flujo principal del modulo o app, (b) validaciones de seguridad OWASP (`validateSafeInput`, `RoleGuard`, `can()`), (c) aislamiento de errores (`ModuleErrorBoundary`) y contratos Zod (`defineApp`, `defineModule`).
-3. Ejecuta obligatoriamente `pnpm validate:all && pnpm typecheck` y reporta el resultado real.
-4. Si una validacion falla por un defecto en el codigo, reportalo claramente sin debilitar el validador ni el test.
+3. Ejecuta obligatoriamente `pnpm validate:all && pnpm typecheck` (y `pnpm build` cuando corresponda al cierre) y reporta el resultado real.
+4. Si ejecutaste `pnpm build`, advierte siempre que cualquier servidor `pnpm dev` activo debe reiniciarse (`Ctrl + C` -> `pnpm dev`) porque `next build` sobrescribe `.next/` e invalida los chunks de desarrollo en vivo.
+5. Si una validacion falla por un defecto en el codigo, reportalo claramente sin debilitar el validador ni el test.
