@@ -268,6 +268,9 @@ Haz el cierre completo de mi desarrollo ejecutando todo esto por mí en orden:
 3. Crea una rama git nueva con prefijo feat/, haz git add únicamente de mis cambios en apps/, modules/, specs/ACTIVE_SESSION.md y pnpm-lock.yaml, haz el commit, súbelo con git push y abre el Pull Request hacia main usando gh pr create.
 ```
 
+> **IMPORTANTE si tenías `pnpm dev` abierto al correr `pnpm build`:**
+> Cuando se ejecuta `pnpm build` (`next build`), Next.js sobrescribe la carpeta `.next/` con los archivos de producción. Si tenías `http://localhost:4310` o `http://localhost:4320` corriendo en otra terminal con `pnpm dev`, la página perderá sus estilos o dará error `500`. Para solucionarlo, detén el servidor (`Ctrl + C`), vuelve a ejecutar `pnpm dev:all` (o `pnpm dev <app>`) y recarga el navegador (`Ctrl + Shift + R`).
+
 ---
 
 ## 7. Backend, Base de Datos y Paso a Producción Asistido por Agentes + CLIs
@@ -365,4 +368,12 @@ Copia el mensaje de error y pégale este prompt a tu agente:
 ```text
 Corrige las violaciones reportadas por pnpm validate:all usando exclusivamente componentes y tokens semánticos de @repo/ui y vuelve a ejecutar la validación.
 ```
+
+### 3. ¿Por qué se rompió o perdió los estilos `http://localhost:4310` (o `4320`) después de correr `pnpm build`?
+
+Porque `pnpm build` (`next build`) sobrescribe la carpeta `.next/` con archivos de producción mientras `next dev` seguía abierto en memoria, haciendo que los archivos CSS/JS de desarrollo devuelvan `500 Internal Server Error`.
+**Solución en 5 segundos:**
+1. En la terminal donde corre `pnpm dev`, presiona **`Ctrl + C`**.
+2. Vuelve a ejecutar **`pnpm dev:all`** (o `pnpm dev:external` / `pnpm dev:internal`).
+3. Recarga el navegador con **`Ctrl + Shift + R`**.
 

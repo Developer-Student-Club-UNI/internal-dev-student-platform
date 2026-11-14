@@ -251,6 +251,9 @@ pnpm dev external-community-web     # Levanta SOLO la web pública en http://loc
 pnpm dev internal-board-portal      # Levanta SOLO el panel interno en http://localhost:4320
 ```
 
+> **Nota importante sobre `pnpm build` mientras `pnpm dev` está corriendo:**
+> Si ejecutas `pnpm build` (por ejemplo, durante `/test` o el cierre de una tarea) mientras tienes un servidor `pnpm dev` activo en otra terminal, Next.js sobrescribirá la carpeta `.next/` con artefactos de producción y los estilos/chunks en `http://localhost:4310` o `4320` devolverán `500 Internal Server Error`. Siempre que corras `pnpm build`, detén `pnpm dev` (`Ctrl + C`), vuelve a iniciarlo y recarga el navegador (`Ctrl + Shift + R`).
+
 ---
 
 ## Guía 2: Cómo usar cualquier Agente de IA (Con o Sin Slash Commands `/`)

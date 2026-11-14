@@ -18,6 +18,6 @@
 - Sincronizar SDD entre harnesses: `pnpm sdd:sync`
 - Validar todos los guardrails Zero-Trust: `pnpm validate:all`
 - Verificar tipos en todos los paquetes: `pnpm typecheck`
-- Compilar produccion: `pnpm build`
+- Compilar produccion: `pnpm build` *(Nota: `next build` sobrescribe `.next/`; si `pnpm dev` estaba corriendo en paralelo en los puertos `4310+`, debes reiniciar `pnpm dev` despues del build para regenerar los chunks de desarrollo).*
 - Crear nueva aplicacion: `pnpm create:app --id <external|internal>-<slug> --name "<Nombre>" --layout <layout> --port <4330+>`
 - Crear nuevo modulo: `pnpm create:module --app <app-id> --id <mod-id> --title "<Titulo>" --icon <IconName> --roles <roles>`
